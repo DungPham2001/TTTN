@@ -8,22 +8,10 @@ import {
   Button
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
-import {
-  ResponsiveContainer,
-  ComposedChart,
-  AreaChart,
-  LineChart,
-  Line,
-  Area,
-  PieChart,
-  Pie,
-  Cell,
-  YAxis,
-  XAxis,
-} from "recharts";
-
 // styles
 import useStyles from "./styles";
+import MUIDataTable from "mui-datatables";
+
 
 // components
 import mock from "./mock";
@@ -34,277 +22,944 @@ import Dot from "../../components/Sidebar/components/Dot";
 import Table from "./components/Table/Table";
 import BigStat from "./components/BigStat/BigStat";
 
-const mainChartData = getMainChartData();
-const PieChartData = [
-  { name: "Group A", value: 400, color: "primary" },
-  { name: "Group B", value: 300, color: "secondary" },
-  { name: "Group C", value: 300, color: "warning" },
-  { name: "Group D", value: 200, color: "success" },
-];
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useEffect } from "react";
+import { green } from "@material-ui/core/colors";
+import axios from "axios";
+//image
+import total from '../../images/total.png';
+import dislike from '../../images/dislike.png'
+import view from '../../images/view.png'
+
+//statistic
+
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend, LineElement, PointElement } from 'chart.js'
+import { Pie, Line } from 'react-chartjs-2'
+
+
 
 export default function Dashboard(props) {
   var classes = useStyles();
   var theme = useTheme();
 
-  // local
-  var [mainChartState, setMainChartState] = useState("monthly");
+  const get = async () => {
+    toast.success('Login Success!', {
+      position: toast.POSITION.TOP_RIGHT
+    });
+  }
+  const[dataApp, setDataApp] = useState({
+    view: 0,
+    dislike: 0,
+    like: 0,
+    favorite: 0
+  })
+  const[numberUser, setNumberUser] = useState(0)
+  const[numberAdmin, setNumberAdmin] = useState(3)
+  const[numberVip, setNumberVip] = useState(0)
+  const[data, setData] = useState([])
+
+  const data_free = []
+
+  data.map((result) => {
+    if (result.id % 2 == 0) {
+      data_free.push(result.id)
+    }
+  })
+
+  const [data2019, setData2019] = useState(0)
+  const [data2020, setData2020] = useState(0)
+  const [data2021, setData2021] = useState(0)
+  const [data2022, setData2022] = useState(0)
+  const [data2023, setData2023] = useState(0)
+  const [dataMonth2019, setDataMonth2019] = useState({
+    january: 0,
+    february: 0,
+    march: 0,
+    april: 0,
+    may: 0,
+    june: 0,
+    july: 0,
+    august: 0,
+    september: 0,
+    october: 0,
+    november: 0,
+    december: 0
+  })
+  const [dataMonth2020, setDataMonth2020] = useState({
+    january: 0,
+    february: 0,
+    march: 0,
+    april: 0,
+    may: 0,
+    june: 0,
+    july: 0,
+    august: 0,
+    september: 0,
+    october: 0,
+    november: 0,
+    december: 0
+  })
+  const [dataMonth2021, setDataMonth2021] = useState({
+    january: 0,
+    february: 0,
+    march: 0,
+    april: 0,
+    may: 0,
+    june: 0,
+    july: 0,
+    august: 0,
+    september: 0,
+    october: 0,
+    november: 0,
+    december: 0
+  })
+  const [dataMonth2022, setDataMonth2022] = useState({
+    january: 0,
+    february: 0,
+    march: 0,
+    april: 0,
+    may: 0,
+    june: 0,
+    july: 0,
+    august: 0,
+    september: 0,
+    october: 0,
+    november: 0,
+    december: 0
+  })
+  const [dataMonth2023, setDataMonth2023] = useState({
+    january: 0,
+    february: 0,
+    march: 0,
+    april: 0,
+    may: 0,
+    june: 0,
+    july: 0,
+    august: 0,
+    september: 0,
+    october: 0,
+    november: 0,
+    december: 0
+  })
+  useEffect(() => {
+    get();
+    axios.get("http://giangndt428.pythonanywhere.com/api/mediareaction/thongkeapp")
+    .then((res) => setDataApp((pre) => {
+      return {
+        ...pre,
+        view: res.data.data.countViewApp,
+        dislike: res.data.data.countDisLikeApp,
+        like: res.data.data.countLikeApp,
+        favorite: res.data.data.countFavoriteApp
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/user/get_users/")
+    .then((res) => setNumberUser(res.data.length))
+    axios.get("http://giangndt428.pythonanywhere.com/api/user/thongkeacountvip/")
+    .then((res) => setNumberVip(res.data.countVip))
+    const headers = {
+      'wsToken' : '7da353b8a3246f851e0ee436d898a26d'
+    }
+    axios.get('http://cinema.tl/api/v1/get-home-films?msisdn=094555566&page=0&size=100',{headers} )
+    .then((res) => setData(res.data.data))
+
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019")
+    .then((res) => setData2019(res.data.statistic.profit)  )
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020")
+    .then((res) => setData2020(res.data.statistic.profit)  )
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021")
+    .then((res) => setData2021(res.data.statistic.profit)  )
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022")
+    .then((res) => setData2022(res.data.statistic.profit)  )
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023")
+    .then((res) => setData2023(res.data.statistic.profit)  )
+
+    //data month 2019
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-01")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        january: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-02")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        february: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-03")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        march: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-04")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        april: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-05")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        may: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-06")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        june: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-07")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        july: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-08")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        august: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-09")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        september: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-10")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        october: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-11")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        november: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2019-12")
+    .then((res) => setDataMonth2019((pre) => {
+      return{
+        ...pre,
+        december: res.data.statistic.profit
+      }
+    }))
+
+    //data month 2020
+
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-01")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        january: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-02")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        february: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-03")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        march: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-04")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        april: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-05")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        may: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-06")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        june: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-07")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        july: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-08")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        august: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-09")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        september: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-10")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        october: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-11")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        november: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2020-12")
+    .then((res) => setDataMonth2020((pre) => {
+      return{
+        ...pre,
+        december: res.data.statistic.profit
+      }
+    }))
+
+    //data month 2021
+
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-01")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        january: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-02")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        february: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-03")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        march: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-04")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        april: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-05")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        may: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-06")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        june: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-07")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        july: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-08")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        august: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-09")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        september: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-10")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        october: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-11")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        november: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2021-12")
+    .then((res) => setDataMonth2021((pre) => {
+      return{
+        ...pre,
+        december: res.data.statistic.profit
+      }
+    }))
+
+    //data month 2022
+
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-01")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        january: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-02")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        february: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-03")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        march: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-04")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        april: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-05")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        may: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-06")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        june: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-07")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        july: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-08")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        august: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-09")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        september: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-10")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        october: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-11")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        november: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2022-12")
+    .then((res) => setDataMonth2022((pre) => {
+      return{
+        ...pre,
+        december: res.data.statistic.profit
+      }
+    }))
+
+    //data month 2023
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-01")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        january: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-02")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        february: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-03")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        march: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-04")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        april: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-05")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        may: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-06")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        june: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-07")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        july: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-08")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        august: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-09")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        september: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-10")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        october: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-11")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        november: res.data.statistic.profit
+      }
+    }))
+    axios.get("http://giangndt428.pythonanywhere.com/api/history/stat?period=2023-12")
+    .then((res) => setDataMonth2023((pre) => {
+      return{
+        ...pre,
+        december: res.data.statistic.profit
+      }
+    }))
+  },[])
+  const googleTranslateElementInit = () => {
+    new window.google.translate.TranslateElement(
+      {
+        pageLanguage: "en",
+        autoDisplay: false
+      },
+      "google_translate_element"
+    );
+  };
+  useEffect(() => {
+    var addScript = document.createElement("script");
+    addScript.setAttribute(
+      "src",
+      "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+    );
+    document.body.appendChild(addScript);
+    window.googleTranslateElementInit = googleTranslateElementInit;
+  }, []);
+
+  //statistic
+
+  ChartJS.register(
+    Tooltip, Legend,
+    ArcElement,
+    CategoryScale,
+    LinearScale,
+    LineElement,
+    PointElement
+  )
+  const labelsPie = ['2019','2020','2021','2022','2023']
+    const dataPie = {
+        labels: labelsPie,
+        datasets: [{
+          label: 'My First Dataset',
+          data: [data2019, data2020, data2021, data2022, data2023],
+          backgroundColor: [
+            'rgba(255, 205, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(201, 203, 207, 0.2)'
+          ],
+          borderColor: [
+            'rgb(255, 205, 86)',
+            'rgb(75, 192, 192)',
+            'rgb(54, 162, 235)',
+            'rgb(153, 102, 255)',
+            'rgb(201, 203, 207)'
+          ],
+          borderWidth: 1
+        }]
+    };
+
+    const configPie = {
+        type: 'bar',
+        data: dataPie,
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        },
+    };
+
+    const labelsLine = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    const dataLine = {
+        labels: labelsLine,
+        datasets: [
+          {
+            label: '2019',
+            data:[dataMonth2019.january,dataMonth2019.february,dataMonth2019.march,dataMonth2019.april,dataMonth2019.may,dataMonth2019.june,dataMonth2019.july,dataMonth2019.august,dataMonth2019.september,dataMonth2019.october,dataMonth2019.november,dataMonth2019.december],
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)'
+          },
+          {
+            label: '2020',
+            data:[dataMonth2020.january,dataMonth2020.february,dataMonth2020.march,dataMonth2020.april,dataMonth2020.may,dataMonth2020.june,dataMonth2020.july,dataMonth2020.august,dataMonth2020.september,dataMonth2020.october,dataMonth2020.november,dataMonth2020.december],
+            borderColor: 'rgb(255, 159, 64)',
+            backgroundColor: 'rgba(255, 159, 64, 0.2)'
+          },
+          {
+            label: '2021',
+            data:[dataMonth2021.january,dataMonth2021.february,dataMonth2021.march,dataMonth2021.april,dataMonth2021.may,dataMonth2021.june,dataMonth2021.july,dataMonth2021.august,dataMonth2021.september,dataMonth2021.october,dataMonth2021.november,dataMonth2021.december],
+            borderColor: 'rgb(255, 205, 86)',
+            backgroundColor: 'rgba(255, 205, 86, 0.2)'
+          },
+          {
+            label: '2022',
+            data:[dataMonth2022.january,dataMonth2022.february,dataMonth2022.march,dataMonth2022.april,dataMonth2022.may,dataMonth2022.june,dataMonth2022.july,dataMonth2022.august,dataMonth2022.september,dataMonth2022.october,dataMonth2022.november,dataMonth2022.december],
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)'
+          },
+          {
+            label: '2023',
+            data:[dataMonth2023.january,dataMonth2023.february,dataMonth2023.march,dataMonth2023.april,dataMonth2023.may,dataMonth2023.june,dataMonth2023.july,dataMonth2023.august,dataMonth2023.september,dataMonth2023.october,dataMonth2023.november,dataMonth2023.december],
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)'
+          }
+        ]
+      }
+    const configLine = {
+        type: 'bar',
+        data: dataLine,
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        },
+    };
+
+    //payment history
+    // const [dataPayment, setDataPayment] = useState([])
+
+    const columns = [
+      {name: 'Name', options: {filter: true}},
+      {name: 'Purchase Date', options: {filter: true}},
+      {name: 'Type Vip', options: {filter: true}},
+      {name: 'Total Money', options: {filter: false}}
+    ]
+    const options = {
+      filter: true,
+      filterType: "dropdown",
+      responsive: ""
+    }
+
+    const [dataPayment, setDataPayment] = useState([])
+
+    useEffect(() => {
+      axios.get("http://giangndt428.pythonanywhere.com/api/history/statall")
+      .then((res) => setDataPayment(res.data.data))
+    },[])
+    const datasetPayment = []
+    dataPayment.map((result) => datasetPayment.push([result.name, result.purchase_date, result.type_vip == '1' ? 'One month' : "One year", result.type_vip == '1' ? '47000' : '439000' ]))
+
+    const [dataUser, setDataUser] = useState([])
+    useEffect( () => {
+      axios.get("http://giangndt428.pythonanywhere.com/api/user/get_users/")
+      .then((res) => setDataUser(res.data))
+    })
 
   return (
     <>
-      <PageTitle title="Dashboard" button={<Button
-      variant="contained"
-      size="medium"
-      color="secondary"
-    >
-        Latest Reports
-    </Button>} />
+      <ToastContainer />
+      <div id="google_translate_element" className={classes.google_translate}>Select Language</div>
       <Grid container spacing={4}>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Widget
-            title="Visits Today"
-            upperTitle
-            bodyClass={classes.fullHeightBody}
-            className={classes.card}
-          >
-            <div className={classes.visitsNumberContainer}>
-              <Grid container item alignItems={"center"}>
-                <Grid item xs={6}>
-              <Typography size="xl" weight="medium" noWrap>
-                12, 678
-              </Typography>
-                </Grid>
-                <Grid item xs={6}>
-              <LineChart
-                width={100}
-                height={30}
-                data={[
-                  { value: 10 },
-                  { value: 15 },
-                  { value: 10 },
-                  { value: 17 },
-                  { value: 18 },
-                ]}
-              >
-                <Line
-                  type="natural"
-                  dataKey="value"
-                  stroke={theme.palette.success.main}
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-                </Grid>
-              </Grid>
+        <Grid item xs={12}>
+          <Widget title="App" upperTitle bodyClass={classes.fullHeightBodyApp} className={classes.card}>
+            <div style={{display: "flex", justifyContent:"space-between"}}>
+              <div style={{display: "flex"}}>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Facebook_Like_button.svg/1200px-Facebook_Like_button.svg.png" width="30px" height="25px" className={classes.image} />
+                <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                  Like App            
+                </Typography>
+                <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                  {dataApp.like}           
+                </Typography>
+              </div>
+
+              <div style={{display: "flex"}}>
+                <img src={dislike} width="30px" height="25px" className={classes.image} />
+                <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                  Dislike App           
+                </Typography>
+                <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                  {dataApp.dislike}           
+                </Typography>
+              </div>
+              <div style={{display: "flex"}}>
+                <img src={view} width="45px" height="25px" className={classes.image} />
+                <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                  View App            
+                </Typography>
+                <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                  {dataApp.view}           
+                </Typography>
+              </div>
+              <div style={{display: "flex"}}>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Heart_coraz%C3%B3n.svg/1200px-Heart_coraz%C3%B3n.svg.png" width="30px" height="25px" className={classes.image} />
+                <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                  Favorite App           
+                </Typography>
+                <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                  {dataApp.favorite}           
+                </Typography>
+              </div>
             </div>
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="center"
-            >
-              <Grid item xs={4}>
-                <Typography color="text" colorBrightness="secondary" noWrap>
-                  Registrations
-                </Typography>
-                <Typography size="md">860</Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography color="text" colorBrightness="secondary" noWrap>
-                  Sign Out
-                </Typography>
-                <Typography size="md">32</Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography color="text" colorBrightness="secondary" noWrap>
-                  Rate
-                </Typography>
-                <Typography size="md">3.25%</Typography>
-              </Grid>
-            </Grid>
+            
+          </Widget>
+        </Grid>
+        <Grid item lg={3} md={4} sm={6} xs={12}>
+          <Widget title="User" upperTitle bodyClass={classes.fullHeightBody} className={classes.card}>
+            <div style={{display: "flex"}}>
+              <img src={total} width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                Total users        
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                {numberUser}           
+              </Typography>
+            </div>
+            <div style={{display: "flex"}}>
+              <img src="https://cdn-icons-png.flaticon.com/512/2304/2304226.png" width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWrap>
+                Admin
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} nWoap>
+                {numberAdmin}       
+              </Typography>
+            </div>
+            <div style={{display: "flex"}}>
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToK_-LT9HmxfBNTsC0A8wfvjtfxKh3GjexbQ&usqp=CAU" width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWrap>
+                Member
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} nWoap>
+                {numberUser - numberAdmin}          
+              </Typography>
+            </div>
+            <div style={{display: "flex"}}>
+              <img src="https://cdn-icons-png.flaticon.com/512/6701/6701712.png" width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWrap>
+                Vip
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                {numberVip}           
+              </Typography>
+            </div>
+            
           </Widget>
         </Grid>
         <Grid item lg={3} md={8} sm={6} xs={12}>
-          <Widget
-            title="App Performance"
-            upperTitle
-            className={classes.card}
-            bodyClass={classes.fullHeightBody}
-          >
-            <div className={classes.performanceLegendWrapper}>
-              <div className={classes.legendElement}>
-                <Dot color="warning" />
-                <Typography
-                  color="text"
-                  colorBrightness="secondary"
-                  className={classes.legendElementText}
-                >
-                  Integration
-                </Typography>
-              </div>
-              <div className={classes.legendElement}>
-                <Dot color="primary" />
-                <Typography
-                  color="text"
-                  colorBrightness="secondary"
-                  className={classes.legendElementText}
-                >
-                  SDK
-                </Typography>
-              </div>
-            </div>
-            <div className={classes.progressSection}>
-              <Typography
-                size="md"
-                color="text"
-                colorBrightness="secondary"
-                className={classes.progressSectionTitle}
-              >
-                Integration
+          <Widget title="Videos" upperTitle className={classes.card} bodyClass={classes.fullHeightBody}>
+            <div style={{display: "flex"}}>
+              <img src={total} width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                Total videos           
               </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={77}
-                classes={{ barColorPrimary: classes.progressBarPrimary }}
-                className={classes.progress}
-              />
-            </div>
-            <div>
-              <Typography
-                size="md"
-                color="text"
-                colorBrightness="secondary"
-                className={classes.progressSectionTitle}
-              >
-                SDK
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                110         
               </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={73}
-                classes={{ barColorPrimary: classes.progressBarWarning }}
-                className={classes.progress}
-              />
+            </div>
+            <div style={{display: "flex"}}>
+              <img src={view} width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                Total view          
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                110         
+              </Typography>
+            </div>
+            <div style={{display: "flex"}}>
+              <img src="https://cdn-icons-png.flaticon.com/512/25/25419.png" width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                Total share        
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                10        
+              </Typography>
+            </div>
+            <div style={{display: "flex"}}>
+              <img src="https://cdn-icons-png.flaticon.com/512/5338/5338282.png" width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                Total comment
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                30         
+              </Typography>
             </div>
           </Widget>
         </Grid>
         <Grid item lg={3} md={8} sm={6} xs={12}>
-          <Widget
-            title="Server Overview"
-            upperTitle
-            className={classes.card}
-            bodyClass={classes.fullHeightBody}
-          >
-            <div className={classes.serverOverviewElement}>
-              <Typography
-                color="text"
-                colorBrightness="secondary"
-                className={classes.serverOverviewElementText}
-                noWrap
-              >
-                60% / 37°С / 3.3 Ghz
+          <Widget title="Films" upperTitle className={classes.card} bodyClass={classes.fullHeightBody}>
+          <div style={{display: "flex"}}>
+              <img src={total} width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                Total films           
               </Typography>
-              <div className={classes.serverOverviewElementChartWrapper}>
-                <ResponsiveContainer height={50} width="99%">
-                  <AreaChart data={getRandomData(10)}>
-                    <Area
-                      type="natural"
-                      dataKey="value"
-                      stroke={theme.palette.secondary.main}
-                      fill={theme.palette.secondary.light}
-                      strokeWidth={2}
-                      fillOpacity="0.25"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className={classes.serverOverviewElement}>
-              <Typography
-                color="text"
-                colorBrightness="secondary"
-                className={classes.serverOverviewElementText}
-                noWrap
-              >
-                54% / 31°С / 3.3 Ghz
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                {data.length}           
               </Typography>
-              <div className={classes.serverOverviewElementChartWrapper}>
-                <ResponsiveContainer height={50} width="99%">
-                  <AreaChart data={getRandomData(10)}>
-                    <Area
-                      type="natural"
-                      dataKey="value"
-                      stroke={theme.palette.primary.main}
-                      fill={theme.palette.primary.light}
-                      strokeWidth={2}
-                      fillOpacity="0.25"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
             </div>
-            <div className={classes.serverOverviewElement}>
-              <Typography
-                color="text"
-                colorBrightness="secondary"
-                className={classes.serverOverviewElementText}
-                noWrap
-              >
-                57% / 21°С / 3.3 Ghz
+            <div style={{display: "flex"}}>
+              <img src="https://d28wu8o6itv89t.cloudfront.net/images/achatpremiumnomdedomainepointp-1539465350573.png" width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWrap>
+                Prenium
               </Typography>
-              <div className={classes.serverOverviewElementChartWrapper}>
-                <ResponsiveContainer height={50} width="99%">
-                  <AreaChart data={getRandomData(10)}>
-                    <Area
-                      type="natural"
-                      dataKey="value"
-                      stroke={theme.palette.warning.main}
-                      fill={theme.palette.warning.light}
-                      strokeWidth={2}
-                      fillOpacity="0.25"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} nWoap>
+                {data_free.length}           
+              </Typography>
             </div>
+            <div style={{display: "flex"}}>
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiiLqXwyY5dr0Nxqa8dz0eu9qjXrTXOIUcEA&usqp=CAU" width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWrap>
+                Free
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} nWoap>
+                {data.length - data_free.length}           
+              </Typography>
+            </div>
+            <div style={{display: "flex"}}>
+              <img src={view} width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWrap>
+                Total view
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} nWoap>
+                {data.length - data_free.length}           
+              </Typography>
+            </div>
+            
           </Widget>
         </Grid>
         <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Widget title="Revenue Breakdown" upperTitle className={classes.card}>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <ResponsiveContainer width="100%" height={144}>
-                  <PieChart>
-                    <Pie
-                      data={PieChartData}
-                      innerRadius={30}
-                      outerRadius={40}
-                      dataKey="value"
-                    >
-                      {PieChartData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={theme.palette[entry.color].main}
-                        />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </Grid>
-              <Grid item xs={6}>
-                <div className={classes.pieChartLegendWrapper}>
-                  {PieChartData.map(({ name, value, color }, index) => (
-                    <div key={color} className={classes.legendItemContainer}>
-                      <Dot color={color} />
-                      <Typography style={{ whiteSpace: "nowrap", fontSize: 12 }} >
-                        &nbsp;{name}&nbsp;
-                      </Typography>
-                      <Typography color="text" colorBrightness="secondary">
-                        &nbsp;{value}
-                      </Typography>
-                    </div>
-                  ))}
-                </div>
-              </Grid>
-            </Grid>
+          <Widget title="Channels" upperTitle  className={classes.card} bodyClass={classes.fullHeightBody}>
+            <div style={{display: "flex"}}>
+              <img src={total} width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                Total channels  
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                150     
+              </Typography>
+            </div>
+            <div style={{display: "flex"}}>
+              <img src={total} width="30px" height="25px" className={classes.image} />
+              <Typography variant="h6" color="text" colorBrightness="primary" className={classes.serverOverviewElementTitle} noWoap>
+                Follows number            
+              </Typography>
+              <Typography variant="h6" color="text" colorBrightness="secondary" className={classes.serverOverviewElementText} noWoap>
+                150    
+              </Typography>
+            </div>
+          </Widget>
+        </Grid>
+        <Grid item xs={12}>
+          <Widget
+            bodyClass={classes.mainChartBodyPie}
+            header={
+              <div className={classes.mainChartHeader}>
+                <Typography
+                  variant="h5"
+                  color="text"
+                  colorBrightness="secondary"
+                >
+                  Payment Statistic Yearly
+                </Typography>
+              </div>
+            }
+          >
+            <Pie data={dataPie} options={configPie} />
           </Widget>
         </Grid>
         <Grid item xs={12}>
@@ -317,104 +972,17 @@ export default function Dashboard(props) {
                   color="text"
                   colorBrightness="secondary"
                 >
-                  Daily Line Chart
+                  Payment Statistic Monthly
                 </Typography>
-                <div className={classes.mainChartHeaderLabels}>
-                  <div className={classes.mainChartHeaderLabel}>
-                    <Dot color="warning" />
-                    <Typography className={classes.mainChartLegentElement}>
-                      Tablet
-                    </Typography>
-                  </div>
-                  <div className={classes.mainChartHeaderLabel}>
-                    <Dot color="primary" />
-                    <Typography className={classes.mainChartLegentElement}>
-                      Mobile
-                    </Typography>
-                  </div>
-                  <div className={classes.mainChartHeaderLabel}>
-                    <Dot color="secondary" />
-                    <Typography className={classes.mainChartLegentElement}>
-                      Desktop
-                    </Typography>
-                  </div>
-                </div>
-                <Select
-                  value={mainChartState}
-                  onChange={e => setMainChartState(e.target.value)}
-                  input={
-                    <OutlinedInput
-                      labelWidth={0}
-                      classes={{
-                        notchedOutline: classes.mainChartSelectRoot,
-                        input: classes.mainChartSelect,
-                      }}
-                    />
-                  }
-                  autoWidth
-                >
-                  <MenuItem value="daily">Daily</MenuItem>
-                  <MenuItem value="weekly">Weekly</MenuItem>
-                  <MenuItem value="monthly">Monthly</MenuItem>
-                </Select>
               </div>
             }
           >
-            <ResponsiveContainer width="100%" minWidth={500} height={350}>
-              <ComposedChart
-                margin={{ top: 0, right: -15, left: -15, bottom: 0 }}
-                data={mainChartData}
-              >
-                <YAxis
-                  ticks={[0, 2500, 5000, 7500]}
-                  tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
-                  stroke={theme.palette.text.hint + "80"}
-                  tickLine={false}
-                />
-                <XAxis
-                  tickFormatter={i => i + 1}
-                  tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
-                  stroke={theme.palette.text.hint + "80"}
-                  tickLine={false}
-                />
-                <Area
-                  type="natural"
-                  dataKey="desktop"
-                  fill={theme.palette.background.light}
-                  strokeWidth={0}
-                  activeDot={false}
-                />
-                <Line
-                  type="natural"
-                  dataKey="mobile"
-                  stroke={theme.palette.primary.main}
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={false}
-                />
-                <Line
-                  type="linear"
-                  dataKey="tablet"
-                  stroke={theme.palette.warning.main}
-                  strokeWidth={2}
-                  dot={{
-                    stroke: theme.palette.warning.dark,
-                    strokeWidth: 2,
-                    fill: theme.palette.warning.main,
-                  }}
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
+            <Line data={dataLine} options={configLine} height={100} />
           </Widget>
         </Grid>
-        {mock.bigStat.map(stat => (
-          <Grid item md={4} sm={6} xs={12} key={stat.product}>
-            <BigStat {...stat} />
-          </Grid>
-        ))}
         <Grid item xs={12}>
           <Widget
-            title="Support Requests"
+            title="List User Vip"
             upperTitle
             noBodyPadding
             bodyClass={classes.tableWidget}
@@ -422,46 +990,16 @@ export default function Dashboard(props) {
             <Table data={mock.table} />
           </Widget>
         </Grid>
+        <Grid item xs={12}>
+            <MUIDataTable
+              title="Payment History"
+              data={datasetPayment}
+              columns={columns}
+              options={options}
+          />
+        </Grid>
       </Grid>
     </>
   );
 }
 
-// #######################################################################
-function getRandomData(length, min, max, multiplier = 10, maxDiff = 10) {
-  var array = new Array(length).fill();
-  let lastValue;
-
-  return array.map((item, index) => {
-    let randomValue = Math.floor(Math.random() * multiplier + 1);
-
-    while (
-      randomValue <= min ||
-      randomValue >= max ||
-      (lastValue && randomValue - lastValue > maxDiff)
-    ) {
-      randomValue = Math.floor(Math.random() * multiplier + 1);
-    }
-
-    lastValue = randomValue;
-
-    return { value: randomValue };
-  });
-}
-
-function getMainChartData() {
-  var resultArray = [];
-  var tablet = getRandomData(31, 3500, 6500, 7500, 1000);
-  var desktop = getRandomData(31, 1500, 7500, 7500, 1500);
-  var mobile = getRandomData(31, 1500, 7500, 7500, 1500);
-
-  for (let i = 0; i < tablet.length; i++) {
-    resultArray.push({
-      tablet: tablet[i].value,
-      desktop: desktop[i].value,
-      mobile: mobile[i].value,
-    });
-  }
-
-  return resultArray;
-}

@@ -130,54 +130,67 @@ const mock = {
   table: [
     {
       id: 0,
-      name: "Mark Otto",
-      email: "ottoto@wxample.com",
-      product: "ON the Road",
-      price: "$25 224.2",
-      date: "11 May 2017",
-      city: "Otsego",
-      status: "Sent"
+      name: "",
+      username: "congle@gmail.com",
+      address: '',
+      phone: '',
+      gender: '',
+      status: "vip"
     },
     {
       id: 1,
-      name: "Jacob Thornton",
-      email: "thornton@wxample.com",
-      product: "HP Core i7",
-      price: "$1 254.2",
-      date: "4 Jun 2017",
-      city: "Fivepointville",
-      status: "Sent"
+      name: "Lê Văn Công",
+      username: "levancong.qc2001@gmail.com",
+      address: 'Thai binh',
+      phone: '',
+      gender: 'nam',
+      status: "vip"
     },
     {
       id: 2,
-      name: "Larry the Bird",
-      email: "bird@wxample.com",
-      product: "Air Pro",
-      price: "$1 570.0",
-      date: "27 Aug 2017",
-      city: "Leadville North",
-      status: "Pending"
+      name: "Cong Le Van 2",
+      username: "admin",
+      address: 'Thai Binh City',
+      phone: '1233456',
+      gender: 'nam',
+      status: "vip"
     },
     {
       id: 3,
-      name: "Joseph May",
-      email: "josephmay@wxample.com",
-      product: "Version Control",
-      price: "$5 224.5",
-      date: "19 Feb 2018",
-      city: "Seaforth",
-      status: "Declined"
+      name: "Smile Le",
+      username: "conglv1000@gmail.com",
+      address: 'saaaaaa',
+      phone: '',
+      gender: 'male',
+      status: "vip"
     },
     {
       id: 4,
-      name: "Peter Horadnia",
-      email: "horadnia@wxample.com",
-      product: "Let's Dance",
-      price: "$43 594.7",
-      date: "1 Mar 2018",
-      city: "Hanoverton",
-      status: "Sent"
-    }
+      name: "Nguyen Dinh Nguyen",
+      username: "conglv1003@gmail.com",
+      address: 'bac ninh',
+      phone: '0978536272',
+      gender: '0',
+      status: "vip"
+    },
+    {
+      id: 5,
+      name: "B19DCCN131 - Phạm Văn Dũng",
+      username: "2631phamvandung@gmail.com",
+      address: 'Ha Noi',
+      phone: '0213467985',
+      gender: 'male',
+      status: "vip"
+    },
+    {
+      id: 6,
+      name: "Dung Pham",
+      username: "0366152797",
+      address: 'Ha Noi',
+      phone: '0366152797',
+      gender: 'male',
+      status: "vip"
+    },
   ]
 };
 

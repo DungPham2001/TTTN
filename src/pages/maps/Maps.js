@@ -14,11 +14,11 @@ const BasicMap = withScriptjs(
     <GoogleMap
       defaultZoom={12}
       defaultCenter={{
-        lat: parseFloat(-37.813179),
-        lng: parseFloat(144.950259),
+        lat: parseFloat(21.027763),
+        lng: parseFloat(105.834160 ),
       }}
     >
-      <Marker position={{ lat: -37.813179, lng: 144.950259 }} />
+      <Marker position={{ lat: 21.027763, lng: 105.834160 }} />
     </GoogleMap>
   )),
 );

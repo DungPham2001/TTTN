@@ -5,6 +5,10 @@ export default makeStyles(theme => ({
     minHeight: "100%",
     display: "flex",
     flexDirection: "column",
+    // marginTop: "10px"
+  },
+  card_app: {
+    display: "flex",
   },
   visitsNumberContainer: {
     display: "flex",
@@ -69,15 +73,26 @@ export default makeStyles(theme => ({
     alignItems: "center",
     maxWidth: "100%",
   },
+  serverOverviewElementTitle:{
+    minWidth: 100,
+    marginTop: "20px",
+    marginRight: "80px"
+  },
   serverOverviewElementText: {
-    minWidth: 145,
-    paddingRight: theme.spacing(2),
+    minWidth: 10,
+    marginTop: "20px",
+    color: "red"
   },
   serverOverviewElementChartWrapper: {
     width: "100%",
   },
   mainChartBody: {
     overflowX: "auto",
+  },
+  mainChartBodyPie: {
+    width: "600px",
+    height: "600px",
+    marginLeft: "300px"
   },
   mainChartHeader: {
     width: "100%",
@@ -126,5 +141,12 @@ export default makeStyles(theme => ({
   secondary: {
     backgroundColor: theme.palette.secondary.main,
     color: '#fff',
+  },
+  image: {
+    paddingRight: "5px",
+    marginTop: "20px"
+  },
+  google_translate: {
   }
+
 }));

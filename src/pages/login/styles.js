@@ -12,8 +12,8 @@ export default makeStyles(theme => ({
     left: 0,
   },
   logotypeContainer: {
-    backgroundColor: theme.palette.primary.main,
-    width: "60%",
+    // backgroundColor: theme.palette.primary.main,
+    width: "50%",
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -27,7 +27,7 @@ export default makeStyles(theme => ({
     },
   },
   logotypeImage: {
-    width: 165,
+    width: "80%",
     marginBottom: theme.spacing(4),
   },
   logotypeText: {
@@ -39,7 +39,7 @@ export default makeStyles(theme => ({
     },
   },
   formContainer: {
-    width: "40%",
+    width: "50%",
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -60,14 +60,10 @@ export default makeStyles(theme => ({
     fontWeight: 500,
     textAlign: "center",
     marginTop: theme.spacing(4),
-  },
-  subGreeting: {
-    fontWeight: 500,
-    textAlign: "center",
-    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(4)
   },
   googleButton: {
-    marginTop: theme.spacing(6),
+    marginTop: theme.spacing(2),
     boxShadow: theme.customShadows.widget,
     backgroundColor: "white",
     width: "100%",
@@ -90,10 +86,13 @@ export default makeStyles(theme => ({
   createAccountButton: {
     height: 46,
     textTransform: "none",
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
   },
   formDividerContainer: {
-    marginTop: theme.spacing(4),
-    marginBottom: theme.spacing(4),
+    marginTop: theme.spacing(2),
+    // marginBottom: theme.spacing(1),
     display: "flex",
     alignItems: "center",
   },
@@ -126,23 +125,24 @@ export default makeStyles(theme => ({
   formButtons: {
     width: "100%",
     marginTop: theme.spacing(4),
-    display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: theme.spacing(2),
   },
+
+  buttonLogin : {
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    width: "100%"
+  },
+
   forgetButton: {
     textTransform: "none",
-    fontWeight: 400,
+    fontWeight: 200,
+    float: "right",
+    color: "red",
+    marginBottom: theme.spacing(2)
   },
   loginLoader: {
     marginLeft: theme.spacing(4),
-  },
-  copyright: {
-    marginTop: theme.spacing(4),
-    whiteSpace: "nowrap",
-    [theme.breakpoints.up("md")]: {
-      position: "absolute",
-      bottom: theme.spacing(2),
-    },
   },
 }));

@@ -34,6 +34,10 @@ import Charts from "../../pages/charts";
 
 // context
 import { useLayoutState } from "../../context/LayoutContext";
+import Films from "../../pages/films/Films";
+import Profile from "../../pages/profile";
+import Videos from "../../pages/videos";
+import Channels from "../../pages/channels";
 
 function Layout(props) {
   var classes = useStyles();
@@ -56,12 +60,10 @@ function Layout(props) {
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/typography" component={Typography} />
               <Route path="/app/tables" component={Tables} />
-              <Route path="/app/notifications" component={Notifications} />
-              <Route
-                exact
-                path="/app/ui"
-                render={() => <Redirect to="/app/ui/icons" />}
-              />
+              <Route path="/app/channels" component={Channels} />
+              <Route path="/app/videos" component={Videos} />
+              <Route path="/app/films" component={Films} />
+              <Route path="/app/profile" component={Profile} />
               <Route path="/app/ui/maps" component={Maps} />
               <Route path="/app/ui/icons" component={Icons} />
               <Route path="/app/ui/charts" component={Charts} />
@@ -108,7 +110,7 @@ function Layout(props) {
                     <Icon
                       path={FacebookIcon}
                       size={1}
-                      color="#6E6E6E99"
+                      color={'primary'}
                     />
                   </IconButton>
                 </Link>
@@ -120,7 +122,7 @@ function Layout(props) {
                     <Icon
                       path={TwitterIcon}
                       size={1}
-                      color="#6E6E6E99"
+                      color={'primary'}
                     />
                   </IconButton>
                 </Link>
@@ -135,7 +137,7 @@ function Layout(props) {
                     <Icon
                       path={GithubIcon}
                       size={1}
-                      color="#6E6E6E99"
+                      color={'primary'}
                     />
                   </IconButton>
                 </Link>

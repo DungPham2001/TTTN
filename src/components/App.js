@@ -3,13 +3,14 @@ import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 
 // components
 import Layout from "./Layout";
-
+import { useEffect } from "react";
 // pages
 import Error from "../pages/error";
 import Login from "../pages/login";
 
 // context
 import { useUserState } from "../context/UserContext";
+
 
 export default function App() {
   // global

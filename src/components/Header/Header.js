@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -17,7 +17,10 @@ import {
   Search as SearchIcon,
   Send as SendIcon,
   ArrowBack as ArrowBackIcon,
+  Settings as SettingsIcon,
+  ArrowRightAltRounded as SignOutIcon
 } from "@material-ui/icons";
+
 import classNames from "classnames";
 
 // styles
@@ -34,7 +37,10 @@ import {
   useLayoutDispatch,
   toggleSidebar,
 } from "../../context/LayoutContext";
-import { useUserDispatch, signOut } from "../../context/UserContext";
+import { useUserDispatch, signOut} from "../../context/UserContext";
+
+
+import axios from "axios";
 
 const messages = [
   {
@@ -104,7 +110,34 @@ export default function Header(props) {
   var [isNotificationsUnread, setIsNotificationsUnread] = useState(true);
   var [profileMenu, setProfileMenu] = useState(null);
   var [isSearchOpen, setSearchOpen] = useState(false);
+  
 
+
+  const access_token = localStorage.getItem("id_token")
+  const [ profile, setProfile ] = useState([]);
+  const [isLoginGoogle, setIsLoginGoogle] = useState(false)
+  useEffect(() => {
+          axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${access_token}`, {
+                  headers: {
+                      // Authorization: `Bearer ${user.access_token}`,
+                      Accept: 'application/json'
+                  }
+              })
+              .then((res) => {
+                  setProfile(res.data);
+                  setIsLoginGoogle(true)
+              })
+              .catch((err) => console.log(err));
+            },
+        []
+    );
+  const name_facebook = localStorage.getItem("name_facebook");
+  const image = localStorage.getItem("image");
+  
+  const handleClickProfile = () => {
+    props.history.push('/app/profile');
+    setProfileMenu(null)
+  }
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
@@ -137,10 +170,9 @@ export default function Header(props) {
           )}
         </IconButton>
         <Typography variant="h6" weight="medium" className={classes.logotype}>
-          React Material Admin
+          ADMIN GROUP 7
         </Typography>
         <div className={classes.grow} />
-        <Button component={Link} href="https://flatlogic.com/templates/react-material-admin-full" variant={"outlined"} color={"secondary"} className={classes.purchaseBtn}>Unlock full version</Button>
         <div
           className={classNames(classes.search, {
             [classes.searchFocused]: isSearchOpen,
@@ -203,8 +235,12 @@ export default function Header(props) {
           aria-controls="profile-menu"
           onClick={e => setProfileMenu(e.currentTarget)}
         >
-          <AccountIcon classes={{ root: classes.headerIcon }} />
-        </IconButton>
+          {isLoginGoogle ?
+            <img src={profile.picture} classes={{ root: classes.headerIcon }} width="28" height="28" style={{borderRadius: '15px'}}  />
+          :
+            <img src={image} classes={{ root: classes.headerIcon }} width="28" height="28" style={{borderRadius: '15px'}}  />
+          }
+          </IconButton>
         <Menu
           id="mail-menu"
           open={Boolean(mailMenu)}
@@ -287,24 +323,28 @@ export default function Header(props) {
           classes={{ paper: classes.profileMenu }}
           disableAutoFocusItem
         >
-          <div className={classes.profileMenuUser}>
-            <Typography variant="h4" weight="medium">
-              John Smith
-            </Typography>
-            <Typography
-              className={classes.profileMenuLink}
-              component="a"
-              color="primary"
-              href="https://flatlogic.com"
-            >
-              Flalogic.com
+        {isLoginGoogle ? 
+          (<div className={classes.profileMenuUser}>
+            <Typography variant="h5" weight="medium">
+              {profile.name}
             </Typography>
           </div>
+          )
+        :
+        (<div className={classes.profileMenuUser}>
+          <Typography variant="h5" weight="medium">
+            {name_facebook}
+          </Typography>
+        </div>
+        )
+        }
           <MenuItem
             className={classNames(
               classes.profileMenuItem,
               classes.headerMenuItem,
             )}
+            onClick={() => handleClickProfile()}
+            
           >
             <AccountIcon className={classes.profileMenuIcon} /> Profile
           </MenuItem>
@@ -314,7 +354,7 @@ export default function Header(props) {
               classes.headerMenuItem,
             )}
           >
-            <AccountIcon className={classes.profileMenuIcon} /> Tasks
+            <SettingsIcon className={classes.profileMenuIcon} /> Settings
           </MenuItem>
           <MenuItem
             className={classNames(
@@ -322,19 +362,20 @@ export default function Header(props) {
               classes.headerMenuItem,
             )}
           >
-            <AccountIcon className={classes.profileMenuIcon} /> Messages
+            <MailIcon className={classes.profileMenuIcon} /> Messages
           </MenuItem>
-          <div className={classes.profileMenuUser}>
-            <Typography
-              className={classes.profileMenuLink}
-              color="primary"
-              onClick={() => signOut(userDispatch, props.history)}
-            >
-              Sign Out
-            </Typography>
-          </div>
+          <MenuItem
+            className={classNames(
+              classes.profileMenuItem,
+              classes.headerMenuItem,
+            )}
+            onClick={() => signOut(userDispatch, props.history)}
+          >
+            <SignOutIcon className={classes.profileMenuIcon} /> Sign Out
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>
+
   );
 }

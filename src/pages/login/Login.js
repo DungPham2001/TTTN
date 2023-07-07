@@ -1,30 +1,34 @@
 import React, { useState } from "react";
-import {
-  Grid,
-  CircularProgress,
-  Typography,
-  Button,
-  Tabs,
-  Tab,
-  TextField,
-  Fade,
-} from "@material-ui/core";
-import { withRouter } from "react-router-dom";
+import {Grid,CircularProgress,Typography,Button,Tabs,Tab,TextField,Fade,MenuItem} from "@material-ui/core";
+import { useHistory, withRouter } from "react-router-dom";
 import classnames from "classnames";
-
+import axios from "axios";
 // styles
 import useStyles from "./styles";
+import { useEffect } from "react";
 
 // logo
-import logo from "./logo.svg";
 import google from "../../images/google.svg";
-
+import facebook from "../../images/facebook.svg";
 // context
-import { useUserDispatch, loginUser } from "../../context/UserContext";
+import { useUserDispatch, loginUser, GoogleLogin, LoginFacebook } from "../../context/UserContext";
+
+//login Google
+import { googleLogout, useGoogleLogin } from '@react-oauth/google';
+
+//login Facebook
+
+import { LoginSocialFacebook } from "reactjs-social-login";
+import { FacebookLoginButton } from "react-social-login-buttons";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
+
 
 function Login(props) {
   var classes = useStyles();
-
   // global
   var userDispatch = useUserDispatch();
 
@@ -33,46 +37,49 @@ function Login(props) {
   var [error, setError] = useState(null);
   var [activeTabId, setActiveTabId] = useState(0);
   var [nameValue, setNameValue] = useState("");
-  var [loginValue, setLoginValue] = useState("admin@flatlogic.com");
-  var [passwordValue, setPasswordValue] = useState("password");
+  var [loginValue, setLoginValue] = useState("");
+  var [passwordValue, setPasswordValue] = useState("");
+  var [addressValue, setAddressValue] = useState("");
+  var [phoneValue, setPhoneValue] = useState("");
+  var [genderValue, setGenderValue] = useState("");
+
+  const listGender = [
+    {
+      value: 'Men',
+      label: 'Men'
+    },
+    {
+      value: 'Women',
+      label: 'Women'
+    }
+  ]
+  
+  const [status, setStatus] = useState(false)
+  const [accessToken, setAccessToken] = useState("");
+  const [accessTokenFacebook, setAccessTokenFacebook] = useState(null);
+  const [profile, setProfile] = useState(null)
+
+  
+  const SignInGoogle = useGoogleLogin({
+    onSuccess: (codeResponse) => ((setStatus(true), setAccessToken(codeResponse.access_token) )),
+    onError: (error) => console.log('Login Failed:', error)
+  });
+
+
 
   return (
+
     <Grid container className={classes.container}>
       <div className={classes.logotypeContainer}>
-        <img src={logo} alt="logo" className={classes.logotypeImage} />
-        <Typography className={classes.logotypeText}>Material Admin</Typography>
+        <img src="https://account.asus.com/img/login_img02.png" alt="logo" className={classes.logotypeImage} />
       </div>
+      <ToastContainer />
       <div className={classes.formContainer}>
         <div className={classes.form}>
-          <Tabs
-            value={activeTabId}
-            onChange={(e, id) => setActiveTabId(id)}
-            indicatorColor="primary"
-            textColor="primary"
-            centered
-          >
-            <Tab label="Login" classes={{ root: classes.tab }} />
-            <Tab label="New User" classes={{ root: classes.tab }} />
-          </Tabs>
-          {activeTabId === 0 && (
             <React.Fragment>
-              <Typography variant="h1" className={classes.greeting}>
-                Good Morning, User
+              <Typography variant="h2" className={classes.greeting}>
+                Welcome Admin N7
               </Typography>
-              <Button size="large" className={classes.googleButton}>
-                <img src={google} alt="google" className={classes.googleIcon} />
-                &nbsp;Sign in with Google
-              </Button>
-              <div className={classes.formDividerContainer}>
-                <div className={classes.formDivider} />
-                <Typography className={classes.formDividerWord}>or</Typography>
-                <div className={classes.formDivider} />
-              </div>
-              <Fade in={error}>
-                <Typography color="secondary" className={classes.errorMessage}>
-                  Something is wrong with your login or password :(
-                </Typography>
-              </Fade>
               <TextField
                 id="email"
                 InputProps={{
@@ -103,23 +110,23 @@ function Login(props) {
                 type="password"
                 fullWidth
               />
+              <Button
+                  size="large"
+                  className={classes.forgetButton}
+                >
+                  Forget Password
+                </Button>
               <div className={classes.formButtons}>
                 {isLoading ? (
                   <CircularProgress size={26} className={classes.loginLoader} />
                 ) : (
                   <Button
+                    className={classes.buttonLogin}
                     disabled={
                       loginValue.length === 0 || passwordValue.length === 0
                     }
                     onClick={() =>
-                      loginUser(
-                        userDispatch,
-                        loginValue,
-                        passwordValue,
-                        props.history,
-                        setIsLoading,
-                        setError,
-                      )
+                      loginUser(userDispatch,loginValue,passwordValue,props.history,setIsLoading,setError, setLoginValue, setPasswordValue)
                     }
                     variant="contained"
                     color="primary"
@@ -127,128 +134,61 @@ function Login(props) {
                   >
                     Login
                   </Button>
-                )}
-                <Button
-                  color="primary"
-                  size="large"
-                  className={classes.forgetButton}
-                >
-                  Forget Password
-                </Button>
-              </div>
-            </React.Fragment>
-          )}
-          {activeTabId === 1 && (
-            <React.Fragment>
-              <Typography variant="h1" className={classes.greeting}>
-                Welcome!
-              </Typography>
-              <Typography variant="h2" className={classes.subGreeting}>
-                Create your account
-              </Typography>
-              <Fade in={error}>
-                <Typography color="secondary" className={classes.errorMessage}>
-                  Something is wrong with your login or password :(
-                </Typography>
-              </Fade>
-              <TextField
-                id="name"
-                InputProps={{
-                  classes: {
-                    underline: classes.textFieldUnderline,
-                    input: classes.textField,
-                  },
-                }}
-                value={nameValue}
-                onChange={e => setNameValue(e.target.value)}
-                margin="normal"
-                placeholder="Full Name"
-                type="text"
-                fullWidth
-              />
-              <TextField
-                id="email"
-                InputProps={{
-                  classes: {
-                    underline: classes.textFieldUnderline,
-                    input: classes.textField,
-                  },
-                }}
-                value={loginValue}
-                onChange={e => setLoginValue(e.target.value)}
-                margin="normal"
-                placeholder="Email Adress"
-                type="email"
-                fullWidth
-              />
-              <TextField
-                id="password"
-                InputProps={{
-                  classes: {
-                    underline: classes.textFieldUnderline,
-                    input: classes.textField,
-                  },
-                }}
-                value={passwordValue}
-                onChange={e => setPasswordValue(e.target.value)}
-                margin="normal"
-                placeholder="Password"
-                type="password"
-                fullWidth
-              />
-              <div className={classes.creatingButtonContainer}>
-                {isLoading ? (
-                  <CircularProgress size={26} />
-                ) : (
-                  <Button
-                    onClick={() =>
-                      loginUser(
-                        userDispatch,
-                        loginValue,
-                        passwordValue,
-                        props.history,
-                        setIsLoading,
-                        setError,
-                      )
-                    }
-                    disabled={
-                      loginValue.length === 0 ||
-                      passwordValue.length === 0 ||
-                      nameValue.length === 0
-                    }
-                    size="large"
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    className={classes.createAccountButton}
-                  >
-                    Create your account
-                  </Button>
+
                 )}
               </div>
+
+              {status ?
+              <Button size="large" className={classes.googleButton} onClick={() => GoogleLogin(userDispatch,accessToken,props.history,setIsLoading,setError)}>
+                <img src={google} alt="google" className={classes.googleIcon} />
+                &nbsp;Sign in with Google
+              </Button>
+              :
+              <Button size="large" className={classes.googleButton} onClick={() => SignInGoogle()}>
+                <img src={google} alt="google" className={classes.googleIcon} />
+                &nbsp;Sign in with Google
+              </Button>
+              }
+
               <div className={classes.formDividerContainer}>
                 <div className={classes.formDivider} />
                 <Typography className={classes.formDividerWord}>or</Typography>
                 <div className={classes.formDivider} />
               </div>
-              <Button
-                size="large"
-                className={classnames(
-                  classes.googleButton,
-                  classes.googleButtonCreating,
-                )}
+              
+              <LoginSocialFacebook appId="775097740638001"
+              onResolve={(response) => {
+                setProfile(response.data)
+              }}
+              onReject={(response) =>{
+                console.log(response)
+
+              }}
               >
-                <img src={google} alt="google" className={classes.googleIcon} />
-                &nbsp;Sign in with Google
+              {profile == null && 
+              <Button size="large" className={classes.googleButton}>
+                <img src={facebook} alt="google" className={classes.googleIcon} />
+                &nbsp;Sign in with Facebook
               </Button>
+              }
+              </LoginSocialFacebook>
+              {profile && 
+              <Button size="large" className={classes.googleButton}>
+                <img src={facebook} alt="google" className={classes.googleIcon} onClick={() => LoginFacebook(userDispatch,profile.accessToken,profile.name,profile.picture.data.url,props.history,setIsLoading,setError)} />
+                &nbsp;Sign in with Facebook
+              </Button>
+              }
+              <Fade in={error}>
+                <Typography color="secondary" className={classes.errorMessage}>
+                  Something is wrong with your login or password :
+                </Typography>
+              </Fade>
             </React.Fragment>
-          )}
+          
         </div>
-        <Typography color="primary" className={classes.copyright}>
-        © 2014-{new Date().getFullYear()} <a style={{ textDecoration: 'none', color: 'inherit' }} href="https://flatlogic.com" rel="noopener noreferrer" target="_blank">Flatlogic</a>, LLC. All rights reserved.
-        </Typography>
       </div>
     </Grid>
+
   );
 }
 

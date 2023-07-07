@@ -44,7 +44,7 @@ export default makeStyles(theme => ({
     },
   },
   searchFocused: {
-    backgroundColor: fade(theme.palette.common.black, 0.08),
+    backgroundColor: fade(theme.palette.common.black, 0.01),
     width: "100%",
     [theme.breakpoints.up("md")]: {
       width: 250,
@@ -119,11 +119,10 @@ export default makeStyles(theme => ({
   },
   profileMenuUser: {
     display: "flex",
-    flexDirection: "column",
     padding: theme.spacing(2),
   },
   profileMenuItem: {
-    color: theme.palette.text.hint,
+    color: theme.palette.text,
   },
   profileMenuIcon: {
     marginRight: theme.spacing(2),

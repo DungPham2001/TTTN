@@ -10,9 +10,8 @@ import {
 import useStyles from "../../styles";
 
 const states = {
-  sent: "success",
-  pending: "warning",
-  declined: "secondary",
+  vip: "success",
+  not_vip: "warning",
 };
 
 export default function TableComponent({ data }) {
@@ -30,16 +29,16 @@ export default function TableComponent({ data }) {
         </TableRow>
       </TableHead>
       <TableBody>
-        {data.map(({ id, name, email, product, price, date, city, status }) => (
+        {data.map(({ id, name, username, address, phone, gender,status }) => (
           <TableRow key={id}>
             <TableCell className="pl-3 fw-normal">{name}</TableCell>
-            <TableCell>{email}</TableCell>
-            <TableCell>{product}</TableCell>
-            <TableCell>{price}</TableCell>
-            <TableCell>{date}</TableCell>
-            <TableCell>{city}</TableCell>
+            <TableCell>{username}</TableCell>
+            <TableCell>{address}</TableCell>
+            <TableCell>{phone}</TableCell>
+            <TableCell>{gender}</TableCell>
             <TableCell>
-              <Chip label={status} classes={{root: classes[states[status.toLowerCase()]]}}/>
+              {/* <Chip label={status} classes={{root: classes[states[status.toLowerCase()]]}}/> */}
+              {status == "vip" ? <img src="https://cdn-icons-png.flaticon.com/512/6701/6701712.png" width="50px" height="50px" /> : ""}
             </TableCell>
           </TableRow>
         ))}
