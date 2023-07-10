@@ -1,6 +1,6 @@
 {
-  "name": "Icons",
+  "name": "Users",
   "version": "0.0.0",
-  "main": "Icons.js",
+  "main": "Users.js",
   "private": true
 }

@@ -24,7 +24,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-
+import logo from './logo.svg'
 
 
 function Login(props) {
@@ -71,14 +71,14 @@ function Login(props) {
 
     <Grid container className={classes.container}>
       <div className={classes.logotypeContainer}>
-        <img src="https://account.asus.com/img/login_img02.png" alt="logo" className={classes.logotypeImage} />
+        <img src={logo} alt="logo" className={classes.logotypeImage} />
       </div>
       <ToastContainer />
       <div className={classes.formContainer}>
         <div className={classes.form}>
             <React.Fragment>
-              <Typography variant="h2" className={classes.greeting}>
-                Welcome Admin N7
+              <Typography variant="h1" className={classes.greeting}>
+                Welcome Movix
               </Typography>
               <TextField
                 id="email"
@@ -110,12 +110,7 @@ function Login(props) {
                 type="password"
                 fullWidth
               />
-              <Button
-                  size="large"
-                  className={classes.forgetButton}
-                >
-                  Forget Password
-                </Button>
+              
               <div className={classes.formButtons}>
                 {isLoading ? (
                   <CircularProgress size={26} className={classes.loginLoader} />

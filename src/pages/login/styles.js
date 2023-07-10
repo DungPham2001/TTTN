@@ -27,7 +27,7 @@ export default makeStyles(theme => ({
     },
   },
   logotypeImage: {
-    width: "80%",
+    width: "100%",
     marginBottom: theme.spacing(4),
   },
   logotypeText: {
@@ -39,7 +39,7 @@ export default makeStyles(theme => ({
     },
   },
   formContainer: {
-    width: "50%",
+    width: "40%",
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -50,7 +50,7 @@ export default makeStyles(theme => ({
     },
   },
   form: {
-    width: 320,
+    width: 400,
   },
   tab: {
     fontWeight: 400,
@@ -60,7 +60,9 @@ export default makeStyles(theme => ({
     fontWeight: 500,
     textAlign: "center",
     marginTop: theme.spacing(4),
-    marginBottom: theme.spacing(4)
+    marginBottom: theme.spacing(4),
+    color: "violet",
+    fontWeight: "bold"
   },
   googleButton: {
     marginTop: theme.spacing(2),
@@ -132,16 +134,10 @@ export default makeStyles(theme => ({
 
   buttonLogin : {
     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-    width: "100%"
+    width: "100%",
+    fontWeight: "bold"
   },
 
-  forgetButton: {
-    textTransform: "none",
-    fontWeight: 200,
-    float: "right",
-    color: "red",
-    marginBottom: theme.spacing(2)
-  },
   loginLoader: {
     marginLeft: theme.spacing(4),
   },

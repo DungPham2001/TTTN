@@ -33,7 +33,7 @@ import {
 
 const structure = [
   { id: 0, label: "Dashboard", link: "/app/dashboard", icon: <HomeIcon /> },
-  { id: 1, label: "Users", link: "/app/tables", icon: <PeopleIcon /> },
+  { id: 1, label: "Users", link: "/app/users", icon: <PeopleIcon /> },
   {id: 2,label: "Channels",link: "/app/channels",icon: <YoutubeIcon />},
   {id: 3,label: "Videos",link: "/app/videos",icon: <VideoIcon />},
   {id: 4,label: "Films", link: "/app/films",icon: <MovieIcon />},

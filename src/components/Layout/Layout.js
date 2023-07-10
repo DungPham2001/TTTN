@@ -25,12 +25,10 @@ import Sidebar from "../Sidebar";
 
 // pages
 import Dashboard from "../../pages/dashboard";
-import Typography from "../../pages/typography";
-import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
-import Tables from "../../pages/tables";
-import Icons from "../../pages/icons";
-import Charts from "../../pages/charts";
+import Users from "../../pages/users/Users";
+
+
 
 // context
 import { useLayoutState } from "../../context/LayoutContext";
@@ -58,15 +56,12 @@ function Layout(props) {
             <div className={classes.fakeToolbar} />
             <Switch>
               <Route path="/app/dashboard" component={Dashboard} />
-              <Route path="/app/typography" component={Typography} />
-              <Route path="/app/tables" component={Tables} />
+              <Route path="/app/users" component={Users} />
               <Route path="/app/channels" component={Channels} />
               <Route path="/app/videos" component={Videos} />
               <Route path="/app/films" component={Films} />
               <Route path="/app/profile" component={Profile} />
               <Route path="/app/ui/maps" component={Maps} />
-              <Route path="/app/ui/icons" component={Icons} />
-              <Route path="/app/ui/charts" component={Charts} />
             </Switch>
             <Box
               mt={5}

@@ -4,8 +4,8 @@ import { makeStyles } from "@material-ui/styles";
 import MUIDataTable from "mui-datatables";
 
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
+import PageTitle from "../../components/PageTitle/PageTitle";
+import Widget from "../../components/Widget/Widget";
 import Table from "../dashboard/components/Table/Table";
 
 // data
@@ -16,7 +16,7 @@ import useStyles from "./styles";
 import Button from '@material-ui/core/Button'
 
 
-export default function Tables() {
+export default function Users() {
   const classes = useStyles();
   const [data, setData] = useState([])
   const [idUser, setIdUser] = useState(1)
