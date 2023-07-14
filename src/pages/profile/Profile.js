@@ -4,13 +4,15 @@ import axios from "axios";
 import { useEffect } from "react";
 import { Button, Grid, Typography, Paper, Modal, TextField, Radio, FormControlLabel, FormControl,FormLabel,RadioGroup } from "@material-ui/core";
 import { useUserDispatch, handleEditProfile } from "../../context/UserContext";
+import image_profile from '../../images/image_profile_1.jpg';
+import ImageUploading from "react-images-uploading";
 
 
   
 
 export default function Profile(props) {
   var userDispatch = useUserDispatch();
-  const image = localStorage.getItem("image");
+  const imaged = localStorage.getItem("image");
   const name_facebook = localStorage.getItem("name_facebook");
   var classes = useStyles();
   const [data, setData] = useState([]);
@@ -124,19 +126,26 @@ export default function Profile(props) {
       .catch((err) => console.log("aaa"));
   }, []);
 
+  const [images, setImages] = React.useState([]);
+  const maxNumber = 69;
+  const onChange = (imageList, addUpdateIndex) => {
+    // data for submit
+    console.log(imageList, addUpdateIndex);
+    setImages(imageList);
+  };
+
   return (
     <>
-      
         <div className={classes.profile}>
           <img
-            src="https://pixinvent.com/demo/vuexy-bootstrap-laravel-admin-template-old/demo-6/images/profile/user-uploads/timeline.jpg"
+            src={image_profile}
             width="100%"
-            height="300px"
+            height="400px"
           />
           <div className={classes.profile_detail}>
             <div className={classes.image}>
               <img
-                src={image}
+                src={imaged}
                 width="150px"
                 height="150px"
                 className={classes.image_admin}
@@ -146,14 +155,11 @@ export default function Profile(props) {
               <h2 className={classes.name_admin}>{name_facebook}</h2>
               <h4 className={classes.role}>ADMIN</h4>
               <div className={classes.button_edit_profile}>
-                <Button
-                  variant="contained"
-                  size="medium"
-                  color="secondary"
-                  onClick={handleOpen}
-                >
-                  Edit Profile
-                </Button>
+                {imaged == "https://cdn-icons-png.flaticon.com/512/4086/4086679.png" ? 
+                <Button variant="contained" size="medium" color="secondary" onClick={handleOpen}>Edit Profile</Button>
+                :
+                <Button variant="contained" size="medium" color="secondary" onClick={handleOpen} disabled>Edit Profile</Button>
+                }
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -241,6 +247,8 @@ export default function Profile(props) {
               </Typography>
             </Paper>
           </Grid>
+
+
           <Grid item xs={10}>
             <Paper elevation={0}>
               <Typography
@@ -248,58 +256,34 @@ export default function Profile(props) {
                 color="textSecondary"
                 className={classes.title}
               >
-                Last Photos
+                Album Image
               </Typography>
-              <Grid container spacing={4}>
-                <Grid item>
-                  <img
-                    src="https://pixinvent.com/demo/vuexy-bootstrap-laravel-admin-template-old/demo-6/images/profile/user-uploads/user-13.jpg"
-                    width="300px"
-                    height="300px"
-                    className={classes.last_image}
-                  />
-                </Grid>
-                <Grid item>
-                  <img
-                    src="https://pixinvent.com/demo/vuexy-bootstrap-laravel-admin-template-old/demo-6/images/profile/user-uploads/user-02.jpg"
-                    width="300px"
-                    height="300px"
-                    className={classes.last_image}
-                  />
-                </Grid>
-                <Grid item>
-                  <img
-                    src={image}
-                    width="300px"
-                    height="300px"
-                    className={classes.last_image}
-                  />
-                </Grid>
-                <Grid item>
-                  <img
-                    src="https://pixinvent.com/demo/vuexy-bootstrap-laravel-admin-template-old/demo-6/images/profile/user-uploads/user-04.jpg"
-                    width="300px"
-                    height="300px"
-                    className={classes.last_image}
-                  />
-                </Grid>
-                <Grid item>
-                  <img
-                    src="https://pixinvent.com/demo/vuexy-bootstrap-laravel-admin-template-old/demo-6/images/profile/user-uploads/user-05.jpg"
-                    width="300px"
-                    height="300px"
-                    className={classes.last_image}
-                  />
-                </Grid>
-                <Grid item>
-                  <img
-                    src="https://pixinvent.com/demo/vuexy-bootstrap-laravel-admin-template-old/demo-6/images/profile/user-uploads/user-06.jpg"
-                    width="300px"
-                    height="300px"
-                    className={classes.last_image}
-                  />
-                </Grid>
-              </Grid>
+              <ImageUploading multiple value={images} onChange={onChange} maxNumber={maxNumber} dataURLKey="data_url" acceptType={["jpg"]}>
+                {({
+                  imageList,
+                  onImageUpload,
+                  onImageRemoveAll,
+                  onImageUpdate,
+                  onImageRemove,
+                  isDragging,
+                  dragProps
+                }) => (
+                // write your building UI
+                  <div className="upload__image-wrapper">
+                    <div className={classes.button_upload}>
+                      <Button variant="contained" size="medium" color="secondary" onClick={onImageUpload} {...dragProps}>Upload Image</Button>
+                      {/* <Button variant="contained" size="medium" color="secondary" onClick={onImageRemoveAll}>Remove all images</Button> */}
+                    </div>
+                    <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                      {imageList.map((image, index) => (
+                        <Grid item key={index} xs={2} sm={4} md={4} style={{marginBottom: "10px"}} >
+                          <img src={image.data_url} width="280" height="250" className={classes.last_image}/>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </div>
+                )}
+              </ImageUploading>
             </Paper>
           </Grid>
         </Grid>

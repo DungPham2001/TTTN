@@ -9,7 +9,7 @@ export default makeStyles(theme => ({
     },
     profile_detail: {
         position: "absolute",
-        top: "70%",
+        top: "75%",
         left: "5%",
         display: "flex"
     },
@@ -35,6 +35,11 @@ export default makeStyles(theme => ({
         padding: "10px",
         color: " #da5290"
 
+    },
+
+    button_upload: {
+        float: "right",
+        margin: "0 5px 20px 0"
     },
     last_image: {
         borderRadius: "10px",
