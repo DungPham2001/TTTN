@@ -58,7 +58,7 @@ function Layout(props) {
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/users" component={Users} />
               <Route path="/app/channels" component={Channels} />
-              <Route path="/app/videos" component={Videos} />
+              <Route path="/app/tv" component={Videos} />
               <Route path="/app/films" component={Films} />
               <Route path="/app/profile" component={Profile} />
               <Route path="/app/ui/maps" component={Maps} />

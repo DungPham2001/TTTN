@@ -16,9 +16,9 @@ export default makeStyles(theme => ({
     },
     paper: {
         width: 400,
-        height: 600,
+        height: 350,
         backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
+        border: '1px solid #000',
         boxShadow: theme.shadows[5],
         padding: '10px',
         margin: '80px 600px',
@@ -31,4 +31,14 @@ export default makeStyles(theme => ({
         textAlign: "center",
         color: "violet"
     },
+    prenium: {
+        color: "red"
+    },
+    free: {
+        color: "blue"
+    },
+    videoFilm: {
+        display: "flex",
+        gap: "10px"
+    }
 }))

@@ -36,5 +36,9 @@ export default makeStyles(theme => ({
     },
     free: {
         color: "blue"
+    },
+    videoFilm: {
+        display: "flex",
+        gap: "10px"
     }
 }))

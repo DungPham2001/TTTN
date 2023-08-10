@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Grid, Modal } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import MUIDataTable from "mui-datatables";
-import ReactHlsPlayer from 'react-hls-player';
+import ReactPlayer from 'react-player';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from 'react-responsive-carousel';
 
 // components
 import PageTitle from "../../components/PageTitle/PageTitle";
@@ -19,15 +21,29 @@ import Button from '@material-ui/core/Button'
 
 export default function Films() {
   const classes = useStyles();
-  const [data, setData] = useState([])
-  
-  const datatables = []
-  const imageURL = []
-  const [idFilm, setIdFilm] = useState(11506)
+  const [filmsListPopular, setFilmListsPopular] = useState([]);
+  const [filmsCountPopular, setFilmsCountPopular] = useState(0);
+  const [filmsListTopRated, setFilmListsTopRated] = useState([]);
+  const [filmsCountTopRated, setFilmsCountTopRated] = useState(0);
+  const [controllerPopular, setControllerPopular] = useState({
+    page: 1,
+    rowsPerPage: 10
+  });
+  const [controllerTopRated, setControllerTopRated] = useState({
+    page: 1,
+    rowsPerPage: 10
+  });
+  const ref = useRef(null);
+
+
+
+  const [videoFilm, setVideoFilm] = useState([])
+  const [idFilm, setIdFilm] = useState(667538);
   const [open, setOpen] = React.useState(false);
   const handleOpen = (datas) => {
     setOpen(true);
-    setIdFilm(datas)
+    setIdFilm(datas);
+    ref.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleClose = () => {
@@ -36,58 +52,101 @@ export default function Films() {
 
   const [filmDetail, setFilmDetail] = useState({
     name: "",
-    avatar: "",
     link: "",
-    quality: "",
-    isSeri: "",
-    isFree: "",
-    viewNumber: "",
-    caption: ""
+    budget: "",
+    overview: "",
+    popularity: "",
+    vote_average: "",
+    vote_count: ""
   })
 
+  // const [link, setLink] = useState("3fzFvZToh8o");
 
-  data.map( (result) => {
-    datatables.push([result.id,result.avatar,result.name,result.id % 2 == 0 ? "Prenium" : "Free",new Date(result.created).toLocaleString('en-GB'),result.description, result.id])
-  })
-  datatables.map( (image) => imageURL.push(image[4]))
 
   const body = (
     <div className={classes.paper}>
       <h2 id="simple-modal-title" className={classes.modal_title}>Film Detail</h2>
       <p>Film name: {filmDetail.name}</p>
       <p>Film video</p>
-      <ReactHlsPlayer src={filmDetail.link} autoPlay={false} controls={true} width="100%" height="auto"/>
-      <p>Quantity : {filmDetail.quality}</p>
-      <p>Is Seri: {filmDetail.isSeri}</p>
-      <p>Is Free: {filmDetail.isFree}</p>
-      <p>View Number: {filmDetail.viewNumber}</p>
-      <p>Caption: {filmDetail.caption}</p>
+      <div className={classes.videoFilm}>
+        <Carousel>
+          {videoFilm.map((link)=><ReactPlayer url={`https://www.youtube.com/embed/${link.key}?controls=0`} playing={true} controls={true} width="100%" height="auto"/>)}
+        </Carousel>
+       
+      </div>
+      <p>Budget : {filmDetail.budget}</p>
+      <p>Popularity: {filmDetail.popularity}</p>
+      <p>Vote Average: {filmDetail.vote_average}</p>
+      <p>Vote Account: {filmDetail.vote_count}</p>
       <div className={classes.btn}>
         <Button variant="contained" size="medium" color="secondary" onClick={() => setOpen(false)}>Close</Button>
       </div>
     </div>
   );
 
+  useEffect(() => {
+    const getDataPopular = async () => {
+      const url = `https://moonflix-api.vercel.app/api/v1/movie/popular?page=${controllerPopular.page}`
+      try{
+        const response = await fetch(url);
+        if(response.status === 200){
+          const data = await response.json();
+          setFilmListsPopular(data.results);
+          setFilmsCountPopular(data.total_results);
+        }else{
+          throw new Error ('Request failed')
+        }
+      }
+      catch(error){
+        console.log(error)
+      }
+    };
+    const getDataTopRate = async () => {
+      const url = `https://moonflix-api.vercel.app/api/v1/movie/top_rated?page=${controllerTopRated.page}`
+      try{
+        const response = await fetch(url);
+        if(response.status === 200){
+          const data = await response.json();
+          setFilmListsTopRated(data.results);
+          setFilmsCountTopRated(data.total_results);
+        }else{
+          throw new Error ('Request failed')
+        }
+      }
+      catch(error){
+        console.log(error)
+      }
+    };
+    getDataPopular();
+    getDataTopRate();
+
+  },[controllerTopRated.page, controllerPopular.page]);
+  var datatablesPopular = [];
+  var datatablesTopRated = [];
+  
+  if( filmsListPopular !== datatablesPopular ){
+    datatablesPopular = filmsListPopular.map((result) => [result.id,"https://image.tmdb.org/t/p/original"+result.poster_path,result.title,result.overview,result.id])
+  }
+  if( filmsListTopRated !== datatablesTopRated ){
+    datatablesTopRated = filmsListTopRated.map((result) => [result.id,"https://image.tmdb.org/t/p/original"+result.poster_path,result.title,result.overview,result.id])
+  }
+
   useEffect( () => {
-    const headers = {
-      'wsToken' : '7da353b8a3246f851e0ee436d898a26d'
-    }
-    axios.get('http://cinema.tl/api/v1/get-home-films?msisdn=094555566&page=0&size=100',{headers} )
-    .then((res) => setData(res.data.data))
-    axios.get('http://cinema.tl/api/v1/get-film-detail?filmId='+idFilm,{headers} )
+    axios.get(`https://moonflix-api.vercel.app/api/v1/movie/detail/`+idFilm )
     .then((res) => setFilmDetail(pre => {
       return {...pre,
-        name: res.data.data.name,
-        avatar: res.data.data.avatar,
-        link: res.data.data.link,
-        quality: res.data.data.quality,
-        isSeri: res.data.data.isSeri,
-        isFree: res.data.data.isFree,
-        viewNumber: res.data.data.viewNumber,
-        caption: res.data.data.caption
+        name: res.data.title,
+        budget: res.data.budget,
+        overview: res.data.overview,
+        popularity: res.data.popularity,
+        vote_average: res.data.vote_average,
+        vote_count: res.data.vote_count
       }
-    }))
+    }));
+    axios.get(`https://moonflix-api.vercel.app/api/v1/movie/detail/`+idFilm)
+    .then((res) => setVideoFilm(res.data.videos.results))
   },[idFilm])
+
 
   const columns = [
     {name: 'ID', options: {filter: false,sort: true}},
@@ -97,8 +156,6 @@ export default function Films() {
       )
     }}},
     {name: 'Name', options: {filter: true,sort: true, filterType: "textField"}},
-    {name: 'Is Prenium', options: {filter: true, filterType: "dropdown"}},
-    {name: 'Created At', options: {filter: true, sort: false, filterType: "multiselect"}},
     {name: 'Description', options: {filter: false, sort: true}},
     {name: 'Actions', options: {filter: false, customBodyRender: (datas) => {
       return(
@@ -106,21 +163,64 @@ export default function Films() {
       )
     }}}
   ]
-  const options = {
-    filter: true,
-    responsive: ""
-  }
+  const optionsPopular = {
+    filterType: "checkbox",        
+    rowsPerPage: controllerPopular.rowsPerPage,
+    page : controllerPopular.page,
+    count : filmsCountPopular,
+    onChangePage: (newPage) => {
+      setControllerPopular({...controllerPopular, page: newPage});
+      
+    },
+    onChangeRowsPerPage: (numberOfRows) => {
+      setControllerPopular({
+        ...controllerPopular,
+        rowsPerPage: numberOfRows,
+        page: 0
+      })
+    }
+  };
+  const optionsTopRated = {
+    filterType: "checkbox",        
+    rowsPerPage: controllerTopRated.rowsPerPage,
+    page : controllerTopRated.page,
+    count : filmsCountTopRated,
+    onChangePage: (newPage) => {
+      setControllerTopRated({...controllerTopRated, page: newPage});
+      
+    },
+    onChangeRowsPerPage: (numberOfRows) => {
+      setControllerTopRated({
+        ...controllerTopRated,
+        rowsPerPage: numberOfRows,
+        page: 0
+      })
+    }
+  };
   return (
     <>
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <MUIDataTable
-            title="List Films"
-            data={datatables}
+            title="Popular"
+            data={datatablesPopular}
             columns={columns}
-            options={options}
+            options={optionsPopular}
+            
           />
-          <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
+          <Modal ref={ref} open={open} onClose={() => handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
+            {body}
+          </Modal>
+        </Grid>
+        <Grid item xs={12}>
+          <MUIDataTable
+            title="Top Rate"
+            data={datatablesTopRated}
+            columns={columns}
+            options={optionsTopRated}
+            
+          />
+          <Modal ref={ref} open={open} onClose={() => handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
             {body}
           </Modal>
         </Grid>
